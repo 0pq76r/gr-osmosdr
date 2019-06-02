@@ -529,6 +529,11 @@ std::vector<std::string> rtl_source_c::get_gain_names( size_t chan )
     if ( rtlsdr_get_tuner_type(_dev) == RTLSDR_TUNER_E4000 ) {
       names += "IF";
     }
+    if ( rtlsdr_get_tuner_type(_dev) == RTLSDR_TUNER_R820T
+        || rtlsdr_get_tuner_type(_dev) == RTLSDR_TUNER_R828D ) {
+      names += "MIX";
+      names += "VGA";
+    }
   }
 
   return names;
@@ -598,6 +603,19 @@ double rtl_source_c::set_gain( double gain, size_t chan )
 
 double rtl_source_c::set_gain( double gain, const std::string & name, size_t chan)
 {
+  if ( _dev && ( rtlsdr_get_tuner_type(_dev) == RTLSDR_TUNER_R820T
+                 || rtlsdr_get_tuner_type(_dev) == RTLSDR_TUNER_R828D )) {
+    if ( "LNA" == name ) {
+      return rtlsdr_set_tuner_if_gain( _dev, 0, gain);
+    }
+    if ( "MIX" == name ) {
+      return rtlsdr_set_tuner_if_gain( _dev, 1, gain);
+    }
+    if ( "VGA" == name ) {
+      return rtlsdr_set_tuner_if_gain( _dev, 2, gain);
+    }
+  }
+
   if ( "IF" == name ) {
     return set_if_gain( gain, chan );
   }
