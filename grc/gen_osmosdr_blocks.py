@@ -405,7 +405,7 @@ PARAMS_TMPL = """
     <name>Ch$(n): RF Gain (dB)</name>
     <key>gain$(n)</key>
     <value>10</value>
-    <type>real</type>
+    <type>raw</type>
     <hide>\#if \$nchan() > $n then 'none' else 'all'#</hide>
   </param>
   <param>
